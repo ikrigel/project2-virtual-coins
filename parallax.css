@@ -44,31 +44,34 @@ body {
 
   #paralx0,#paralx1,#paralx2 {
     position: absolute;
-    height: 450px;
-    width: 200px;
+    height: 950px;
+    width: 300px;
     border-radius: 50%;
     text-align: center;
     line-height: 390px;
     box-shadow: 10px 5px 25px #333;
     color: #fff;
+    
   }
     
   #paralx0 {
     background-color: #01579b;
-    top: 0px;
+    top: 70px;
     right: 0px;
     z-index: -1;
   }
   
   #paralx1 {
     background-color: #4f83cc;
-    top: 1200px;
-    left: 55%;
-    z-index: 21;
+    top: 2000px;
+    left: 77%;
+    z-index: -1;
   }
   #paralx2 {
     background-color: #002f6c;
-    top: 900px;
-    left: 25%;
-    z-index: 20;
+    top: 4000px;
+    left:2%;
+    z-index: -1;
+    
+    
   } 
