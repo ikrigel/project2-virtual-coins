@@ -1,0 +1,235 @@
+h1 {
+  text-align: center;
+  color: orange;
+  text-decoration: underline;
+  font-weight: bolder;
+}
+
+body {
+  color: blue;
+}
+
+table {
+  margin: auto;
+}
+
+table, td, th {
+  border: 1px solid black;
+}
+
+td, th {
+  width: 300px;
+  text-align: center;
+}
+
+.menuContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+}
+
+.btn-default {
+  color: green;
+  border: 2px solid #4CAF50;
+}
+
+.home-button:hover {
+  color: black;
+  border: 2px solid red;
+}
+
+.active:hover {
+  color: black;
+  background-color: blue;
+  border: 0px solid #4CAF50;
+}
+
+.active {
+  color: black;
+  background-color: white;
+  border: 0px solid #4CAF50;
+}
+
+li:hover {
+  color: #000000;
+  background-color: white;
+  border: 0px solid #4CAF50;
+}
+
+.nav {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.btn {
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-ordinal-group: 2;
+      -ms-flex-order: 1;
+          order: 1;
+}
+
+.form-control {
+  text-align: center;
+}
+
+.form-group {
+  text-align: center;
+}
+
+.btn {
+  background-color: white;
+}
+
+.btn-primary {
+  background-color: blue;
+}
+
+.btn-primary:hover {
+  background-color: white;
+  color: blue;
+}
+
+.row {
+  margin-bottom: 10px;
+}
+
+.row > div {
+  height: 50px;
+  font-size: small;
+  text-align: center;
+}
+
+.form-inline {
+  text-align: center;
+}
+
+.form-control {
+  text-align: right;
+}
+
+.btn-outline-success {
+  text-align: right;
+}
+
+.card {
+  border: 1px solid black;
+}
+
+#myProgress {
+  width: 100%;
+  background-color: #ddd;
+}
+
+#myBar {
+  width: 1%;
+  height: 30px;
+  background-color: #04AA6D;
+}
+
+#Progress_Status {
+  width: 50%;
+  background-color: #ddd;
+}
+
+#myprogressBar {
+  width: 2%;
+  height: 20px;
+  background-color: #4CAF50;
+  position: fixed;
+  top: 0;
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 50%;
+  position: relative;
+  display: block;
+  opacity: 0.7;
+  background-color: #fff;
+  z-index: 99;
+  text-align: center;
+}
+
+#loading-image {
+  position: absolute;
+  top: 100px;
+  left: 240px;
+  z-index: 100;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: black;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+div .aboutMe {
+  text-align: center;
+}
+/*# sourceMappingURL=project2-v1.css.map */
+/* hide scrollbar but allow scrolling */
+#wrapper {
+  -ms-overflow-style: none; /* for Internet Explorer, Edge */
+  scrollbar-width: none; /* for Firefox */
+  overflow-y: scroll; 
+}
+
+#wrapper::-webkit-scrollbar {
+  display: none; /* for Chrome, Safari, and Opera */
+}
+
+.home-button-hover:hover{
+  color: black;
+}

@@ -1,0 +1,629 @@
+
+$(function () {
+  
+  $('#loading').show();
+  loadCoins();
+  $('#loading').hide();
+
+  var i = 0;
+  function move() {
+    if (i == 0) {
+      i = 1;
+      var elem = document.getElementById("myBar");
+      var width = 1;
+      var id = setInterval(frame, 10);
+      function frame() {
+        if (width >= 100) {
+          clearInterval(id);
+          i = 0;
+        } else {
+          width++;
+          elem.style.width = width + "%";
+        }
+      }
+    }
+  }
+
+ 
+  $(".btn-default").on('mouseenter', async function () {
+    $(this).css({ "background-color": "blue", "color": "white" });
+  });
+  $(".btn-default").on('mouseleave', async function () {
+    $(this).css({ "background-color": "white", "color": "green", "border": "2px solid #4CAF50" });
+  });
+  $(".btn-default").on('click', async function () {
+    $('#myModal').modal('hide');
+  });
+  $(".modal-X-close").on('click', async function () {
+    $('#myModal').modal('hide');
+  });
+  $(".active:contains('Home')").on('click', async function () {
+    //loadCoins();
+    
+    
+    $("#coin-list").parent().show();
+    $("#chartContainer").hide();
+    $(".aboutMe").hide();
+  });
+  // $(".btn-outline-success").on('click', async function () {
+  //   searchCoins();
+  // });
+  $(".active").on('mouseover', async function () {
+    $(this).css({ "background-color": "white", "color": "white", "border": "2px solid #4CAF50" });
+
+  });
+  $(".active").on('mouseleave', async function () {
+    $(this).css({ "background-color": "white", "color": "green", "border": "0px solid #4CAF50" });
+
+  });
+
+  
+  // $(".active:contains('Live Report')").on('click', async function () {
+  //   $(this).css({ "background-color": "blue", "color": "white" });
+  //   alert(`searching for Live Report`);
+  // });
+  $(".active:contains('Live Report')").on('mouseleave', async function () {
+    $(this).css({ "background-color": "white", "color": "green", "border": "2px solid #4CAF50" });
+    //alert(`searching for Live Report`);
+  });
+
+  $("a:contains('About')").on('click', async function () {
+    move();
+    $('#loading').show();
+    $("#chartContainer").hide();
+    $("#coin-list").parent().hide();
+    let aboutMe="";
+    aboutMe=`<div>${allOfMyLove()} <br/> ${blackDog()}</div>`;
+    $(aboutMe).appendTo(".aboutMe");
+    $(".aboutMe").html(aboutMe);
+    $(".aboutMe").show();
+    $('#loading').hide();
+
+  });
+
+  $("a:contains('Live Report')").on('click', async function () {
+    //alert(`searching for Live Report`);
+    $("#chartContainer").show();
+    $("#coin-list").parent().hide();
+    $(".aboutMe").hide();
+    loadReport() ;
+
+    //createReport();
+  });
+
+  $(".navbar-brand:contains('Mission 2')").on('click', async function () {
+    alert(`searching for Mission 2`);
+  });
+
+  $(".btn-outline-success").on('click', function (){searchCoins()}) ;
+
+  // When the user clicks anywhere outside of the modal, close it
+    
+  // window.onclick = function(event) {
+  //   if (event.target == modal) {
+  //     modal.style.display = "none";
+  //   }
+  // }
+ 
+
+}); 
+
+// $(window).load(function() {
+//   alert("hi");
+//    $('#loading').hide();
+//  });
+ async function loadReport() {
+   
+  CurrentSelectedCoinSymbolsForReport;
+  if(CurrentSelectedCoinSymbolsForReport.length===0){
+    $(".modal-body").html("No coins selected").show();
+    //$(".modal-body").html(innerHTMLCoin);
+    //$("#myModal").modal("show");
+    //modal.style.display = "block";
+    //$(".modal").show();
+    $('#myModal').modal('show');
+    //alert(`No coins selected`);
+    $("#coin-list").parent().show();
+  }else {
+  let coinString="";
+  createOngoingGraph="";
+  coinString=CurrentSelectedCoinSymbolsForReport[CurrentSelectedCoinSymbolsForReport.length-1];
+  coinString = coinString.slice(0, -1); 
+  console.log(coinString);
+   move();
+   
+  
+ 
+   createReport(coinString);
+   $(".coin-list").hide();
+   }
+  }
+
+ //let createOngoingGraph = function (listOfCoins) {
+function createReport(listOfCoins){
+  debugger;
+    console.log("hello coins from multicharts");
+    var coinDataPoints1 = [];
+    var coinDataPoints2 = [];
+    var coinDataPoints3 = [];
+    var coinDataPoints4 = [];
+    var coinDataPoints5 = [];
+    var arr5 = [coinDataPoints1, coinDataPoints2, coinDataPoints3, coinDataPoints4, coinDataPoints5];
+
+    $.getJSON(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${listOfCoins}&tsyms=USD`, function (data) {
+      $('#loading').hide();
+        // Object.entries takes the date and pharse it into an array, and there for i can run on it with an index!!!!
+        let arrrrr = Object.entries(data);
+        let beginDate = Date.now();
+        arrrrr.reduce(function (accumulator, currentValue, currentIndex, array) {
+            arr5[currentIndex].push({
+                x: beginDate,
+                y: (currentValue[1]["USD"])
+            });
+        }, 0)
+
+        // Creating the graphData array
+        const graphData = [];
+        arrrrr.reduce(function (accumulator, currentValue, currentIndex, array) {
+            graphData.push({
+                type: "line",
+                xValueType: "dateTime",
+                yValueFormatString: "###.00 USD",
+                xValueFormatString: "hh:mm:ss TT",
+                showInLegend: true,
+                name: `${currentValue[0]}`,
+                dataPoints: arr5[currentIndex]
+            });
+        }, 0)
+
+        console.log(graphData);
+
+
+        var options = {
+            title: {
+                text: "Cryptocurrencies Live Report"
+            },
+            axisX: {
+                title: "Time"
+            },
+            axisY: {
+                suffix: "USD"
+            },
+            toolTip: {
+                shared: true
+            },
+            legend: {
+                cursor: "pointer",
+                verticalAlign: "top",
+                fontSize: 30,
+                fontColor: "blue",
+                itemclick: toggleDataSeries
+            },
+            data: graphData
+        };
+
+
+        console.log(options);
+
+        var chart2 = $("#chartContainer").CanvasJSChart(options);
+
+        function toggleDataSeries(e) {
+            if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            }
+            else {
+                e.dataSeries.visible = true;
+            }
+            e.chart.render();
+        }
+
+        // update function
+        function updateChart() {
+          $('#loading').stop();
+            $.getJSON(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${listOfCoins}&tsyms=USD`, function (data) {
+              $('#loading').hide();
+                //debugger
+                let arrrrr2 = Object.entries(data);
+                let beginDate2 = Date.now();
+                arrrrr2.reduce(function (accumulator, currentValue, currentIndex, array) {
+                    arr5[currentIndex].push({
+                        x: beginDate2,
+                        y: (currentValue[1]["USD"])
+                    });
+
+                    // // updating legend text with  updated with y Value 
+                    options.data[currentIndex].legendText = `${currentValue[0]}: ${currentValue[1]["USD"]}USD`;
+
+
+                }, 0)
+            });
+
+            $("#chartContainer").CanvasJSChart().render();
+        }
+
+
+        setInterval(function () { updateChart() }, 2000);
+
+        
+    });
+   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+const creatCoinCard = function (singleCoin) {
+  $(document).ajaxStart(function() {
+    // show loader on start
+    $("#loading").css("display","block");
+}).ajaxSuccess(function() {
+    // hide loader on success
+    $("#loading").css("display","none");
+});
+debugger;
+  $('#loading').show();
+  myProgress.start();
+  const $card = $(`<div class="col"
+  <div class="card" style="width: 19rem;">
+    <div class="card-body">
+      <h5 class="card=title">${singleCoin.symbol}</h5>
+        <div class ="form-check form-switch"> 
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+         </div>
+         <p class="card-text">${singleCoin.name}</p>
+         <a class="moreInfo btn btn-primary">More Info</a>
+    </div>
+  </div>
+</div>`);
+  $card.find("input[type=checkbox]").on("click", console.log);
+  $card.find("input[type=checkbox]").on("click", function(){
+    $('.modal-body').append($card);
+  });
+
+  $card.find('a .moreInfo').on("click", function () {
+    $('#loading').show();
+    console.log(singleCoin.id);
+    moreCoinInfo(singleCoin.id);
+  });
+  $('ul').append($card);
+
+}
+
+function update() {
+  var element = document.getElementById("myprogressBar");  
+  var width = 1;
+  var identity = setInterval(scene, 10);
+  function scene() {
+    if (width >= 100) {
+      clearInterval(identity);
+    } else {
+      width++;
+      element.style.width = width + '%';
+    }
+  }
+}
+
+async function loadCoins() {
+  
+  
+  move();
+  try {
+    let url = "https://api.coingecko.com/api/v3/coins/";
+    const allCoins = await getDataAsync(url);
+
+    let id = 1;
+    let toggleSwitch = `
+       <label class='switch'>
+          <input type="checkbox">
+         <span class="slider round"></span>
+       </label>
+` ; 
+    $('#chartContainer').empty();
+    $('#coin-list').empty();
+      allCoins.forEach(coin => {
+      $('#coin-list').append(createCoinCard(coin));
+    })
+
+  }
+
+  catch (err) {
+    //.text(JSON.stringify(moreInfo))
+    alert("Error: " + JSON.stringify(err.message));
+  }
+}
+
+function getDataAsync(url) {
+  return $.get(url);
+}
+
+
+function createCoinCard(singleCoin) {
+  
+  const $coin = $(`<div class="col">
+  <div class="card" style="width: 19rem; height:19rem;margin:15px; border: 1px solid black; text-align:center">
+    <div class="card-body" style="justify-content:center">
+      <h5 class="card-title">${singleCoin.symbol.toUpperCase()}</h5>
+        <div class ="form-check form-switch"> 
+          <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" >
+         </div>
+         <p class="card-text">${singleCoin.name}</p>
+         <button class="toggle-more-info btn btn-primary majorpoints ">More Info</button>
+         <div class="more-info" style="display: none; width: 17rem; height:8rem;margin:2px; border: 1px solid black; overflow:auto" >hey</div>
+    </div>
+  </div>
+</div>`);
+
+ $coin.find("input[type=checkbox]").on("click", console.log);
+    $coin.find("input[type=checkbox]").on("click", function() {favoriteCoinsToStore(this)} );
+     //$coin.find(".btn-outline-success").on("click", function() {favoriteCoinsToSearch(this)} );
+  let isMoreInfoOpen = false;let moreInfo="";
+  $coin.find('.toggle-more-info').on("click", async function () {
+    document.onreadystatechange=move();
+    if (!isMoreInfoOpen) {
+      $('#loading').show();
+      let url = `https://api.coingecko.com/api/v3/coins/${singleCoin.id}`;
+      const coinFromSessionStorage=sessionStorage.getItem(`${singleCoin.name}`)
+      if (coinFromSessionStorage===null){
+        console.log(`${singleCoin.name} isn't stored in session storage`);
+        const coinMoreInfo=await getDataAsync(url);
+        setTimeout(()=>{
+          sessionStorage.removeItem(coinMoreInfo.name)
+        },120000);
+         moreInfo={id: coinMoreInfo.id,
+          img: coinMoreInfo.image.thumb,
+          eur:coinMoreInfo.market_data.current_price.eur,
+          usd:coinMoreInfo.market_data.current_price.usd,
+          ils:coinMoreInfo.market_data.current_price.ils
+          }
+          const coinToStorage=JSON.stringify(moreInfo);
+          sessionStorage.setItem(`${coinMoreInfo.name}`,coinToStorage);
+          console.log(`saved ${coinMoreInfo.name} to session storage`);
+          console.log(`coin id: ${coinMoreInfo.id}`);
+         
+      }
+      else{ 
+        
+        coinMoreInfo=JSON.parse(coinFromSessionStorage);
+         moreInfo={id: coinMoreInfo.id,
+          img: coinMoreInfo.img,
+          eur:coinMoreInfo.eur,
+          usd:coinMoreInfo.usd,
+          ils:coinMoreInfo.ils
+          }
+      }
+      $('#loading').hide();
+      
+      //const moreInfo = await getDataAsync(url);
+      
+      
+      const moreInfoHtml = $(`<div><img src="${moreInfo.img}"/></br>
+                             Current market data prices:</br> 
+                             EUR: ${moreInfo.eur}&#8364;</br>
+                             USD: ${moreInfo.usd}&#36;</br>
+                             ILS: ${moreInfo.ils}&#8362;</br>
+                             </div>    `);
+      // $coin.find('.more-info').text(JSON.stringify(moreInfo));
+      $coin.find('.more-info').html(moreInfoHtml);
+     
+    }
+    isMoreInfoOpen = !isMoreInfoOpen;
+    $coin.find('.more-info').slideToggle();
+  });
+  //$coin.find("input[type=checkbox]").on("click", console.log);
+  return $coin;
+  
+  
+}
+
+let allCheckedCoions=[];
+var countChecked = function () {
+  var n = $("input:checked").length;
+  (n < 6) ? console.log(n + (n === 1 ? " is" : " are") + " checked!") : console.log("no more checks");
+  if (n === 6) {
+      console.log("max 5");
+      $(this).prop("checked", false);
+      allCheckedCoions = Object.entries($("input:checked").parent().prev());
+      allCheckedCoions.splice(-2);
+      console.log(allCheckedCoions);
+      console.log(Array.isArray(allCheckedCoions));
+
+      console.log(allCheckedCoions.reduce((accumulator, currentValue, currentIndex, array) => {
+          return accumulator + allCheckedCoions[currentIndex][1].outerText + ',';
+      }, ""));
+    }
+    console.log(allCheckedCoions.reduce((accumulator, currentValue, currentIndex, array) => {
+      return accumulator + allCheckedCoions[currentIndex][1].outerText + ',';}, ""));
+  };
+  
+let CurrentSelectedCoinSymbolsForReport=[];
+let selectedCoins = [];
+let coinsNames=[];
+function favoriteCoinsToStore(top) {
+let currentCoin=$(top);
+countChecked();
+
+
+  if (top.checked === true) {
+
+     if(selectedCoins.length < 5){
+              selectedCoins.push(currentCoin);
+              coinsNames.push( $(".card-title")
+          .filter(function () {
+              return $(this).text;
+          }));
+              console.log(currentCoin);
+              console.log(coinsNames);
+              console.log(coinsNames.reduce((accumulator, currentValue, currentIndex, array) => {
+                return accumulator + coinsNames[currentIndex][1].outerText + ',';}, ""));
+            }else{
+               //alert("Cannot select more than 5 coins");
+               top.checked=false;
+               console.log(top.checked,selectedCoins);
+          //console.log(selectedCoins[i])
+          for (const iterator of selectedCoins) {
+            console.log(iterator);
+          }
+         let innerHTMLCoin="";
+         let innerTextCoinName="";
+         for (const iterator of selectedCoins) {
+           
+          innerHTMLCoin+=$(iterator).parent().parent().parent().html();
+          //innerHTMLCoin+=iterator.parent().parent().parent().parent().html();
+          //innerTextCoinName+=iterator.parent().text();
+          //innerHTMLCoin+=iterator.parent().html();
+        }
+
+           // $(".modal-body").html(innerTextCoinName);
+            $(".modal-body").html(innerHTMLCoin);
+             $("#myModal").modal("show");
+             //$("input[type=checkbox]").modal("show");
+             //$("input:checked").dialog().parent().parent().parent().parent();
+            // $("input:checked").dialog();
+            }
+          }else{//false -user wants to remove a coin from selected coins
+            let coinIndex = selectedCoins.findIndex(function(coinInArray){
+              if(coinInArray===currentCoin){
+                return true;
+              }else{
+                return false;
+              }
+              })
+              selectedCoins.splice(coinIndex,1);
+
+          }
+          console.log(top.checked,selectedCoins);
+          //console.log(selectedCoins[i])
+          for (const iterator of selectedCoins) {
+            console.log(iterator);
+          }
+          selectedCoins = Object.entries($("input:checked").parent().prev());
+          selectedCoins.splice(-2);
+      console.log(selectedCoins);
+      console.log(Array.isArray(selectedCoins));
+      CurrentSelectedCoinSymbolsForReport=[];
+          console.log(selectedCoins.reduce((accumulator, currentValue, currentIndex, array) => {
+            // for (const iterator of object) {
+              
+            // }
+            CurrentSelectedCoinSymbolsForReport[currentIndex]=accumulator + selectedCoins[currentIndex][1].outerText + ',';
+            
+            return accumulator + selectedCoins[currentIndex][1].outerText + ',';}, ""));
+            for (const iterator of CurrentSelectedCoinSymbolsForReport) {
+              console.log(`current selected coins: ${iterator}`);  
+            }
+            
+         
+  }
+
+  for (const iterator of CurrentSelectedCoinSymbolsForReport) {
+    console.log(`current selected coins test: |${iterator}`);  
+  }
+
+$(".modal-close").on('click', async function () {
+    let innerHTMLCoin="";
+    $("#myModal").modal("hide");
+
+  });
+  
+  $(".modal-X-close").on('click', async function () {
+
+    $("#myModal").modal("hide");
+
+  });
+
+
+
+
+////////////////////////////////////////seconed chart test////////////////////////////////
+ 
+//$(".btn-outline-success").on('click', async function () 
+$(".btn-outline-success").on('click', function (){searchCoins()}) ;
+function searchCoins(){
+//debugger;
+    let searchCoin = "";
+    searchCoin = $("input").val();
+    let searchResult="";
+    
+    let str = $("input").val().toUpperCase();
+        console.log(str);
+        console.log($(".card-title").filter(function () {
+            console.log($(this).text() === str);
+        }));
+        let cardsShown=true;
+if(str!=="" && cardsShown===true){
+  // $scope.data = {};
+  // $(".modal-body").html( 
+    $(".card-title")
+            .filter(function () {
+                return $(this).text() !== str;
+            })
+            .parent()
+            .parent()
+            .hide();
+             
+      
+            cardsShown=false;
+            
+          }
+          else if (str!=="" && cardsShown===false){
+            
+            $(".card-title").parent()
+            .parent()
+            .show();
+            $(".card-title")
+            .filter(function () {
+                return $(this).text() !== str;
+            })
+            .parent()
+            .parent()
+            .show();
+            cardsShown===true;
+          }
+          else{
+            $(".card-title")
+            .filter(function () {
+                return $(this).text() !== str;
+            })
+            .parent()
+            .parent()
+            .show();
+            
+          }
+          
+           
+          
+
+  };
+
+  function allOfMyLove() {
+    $('#loading').show();
+    let lyrics=`<h1>All My Love<h1><br/>
+    <h3>Led Zeppelin</h3><br/>
+    <iframe width="790" height="444" src="https://www.youtube.com/embed/cdERUjC0rYw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br/>
+    <g-expandable-content jsname="WbKHeb" jscontroller="Ah7cLd" jsaction=";rcuQ6b:npT2md" jsshadow="" aria-hidden="false" data-eb="0" data-mt="0" data-quie="" style="transition: none 0s ease 0s;"><span jsname="zXitYb" jsslot=""><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Should I fall out of love, my fire in the light</span><br><span jsname="YS01Ge">To chase a feather in the wind</span><br><span jsname="YS01Ge">Within the glow that weaves a cloak of delight</span><br><span jsname="YS01Ge">There moves a thread that has no end</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">For many hours and days that pass ever soon</span><br><span jsname="YS01Ge">The tides have caused the flame to dim</span><br><span jsname="YS01Ge">At last the arm is straight, the hand to the loom</span><br><span jsname="YS01Ge">Is this to end or just begin?</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">All of my love, all of my love</span><br><span jsname="YS01Ge">All of my love to you, oh</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">All of my love, all of my love, oh</span><br><span jsname="YS01Ge">All of my love to you</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">The cup is raised, the toast is made yet again</span><br><span jsname="YS01Ge">One voice is clear above the din</span><br><span jsname="YS01Ge">Proud Arianne one word, my will to sustain</span><br><span jsname="YS01Ge">For me, the cloth once more to spin, oh</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">All of my love, all of my love, oh</span><br><span jsname="YS01Ge">All of my love to you</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">All of my love, all of my love, yes</span><br><span jsname="YS01Ge">All of my love to you </span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Yours is the cloth, mine is the hand that sews time</span><br><span jsname="YS01Ge">His is the force that lies within</span><br><span jsname="YS01Ge">Ours is the fire, all the warmth we can find</span><br><span jsname="YS01Ge">He is a feather in the wind, oh</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">All of my love, all of my love, oh</span><br><span jsname="YS01Ge">All of my love to you</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">All of my love, ooh yes, all of my love to you now</span><br><span jsname="YS01Ge">All of my love, all of my love</span><br><span jsname="YS01Ge">All of my love, love, sometimes, sometimes</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Sometimes, sometimes, oh love</span><br><span jsname="YS01Ge">Hey, hey, hey</span><br><span jsname="YS01Ge">Hey, hey, hey</span><br><span jsname="YS01Ge">Ooh yeah, it's all my love</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">All of my love, all of my love, to you now</span></div><div jsname="U8S5sf" class="ujudUb WRZytc"><span jsname="YS01Ge">All of my love, all of my love</span><br><span jsname="YS01Ge">all of my love to, to you, you, you, yeah</span><br><span jsname="YS01Ge">I get a little bit lonely</span></div></span></g-expandable-content>
+    <img src="c:/JB-projects/Project 2 - 21.7.21/polo/Polo1.jpeg" alt="Polo" width="20%" height="20%"><br/>
+    <img src="c:/JB-projects/Project 2 - 21.7.21/polo/Polo2.jpeg" alt="Polo Love" width="20%" height="20%">`
+ return lyrics;   
+}
+function blackDog() {
+    let lyrics=`
+    <iframe width="790" height="593" src="https://www.youtube.com/embed/jL2CVek1ZS0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br/>
+    <div><div class="kp-header" data-ved="2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQ3z4oAHoECAkQAQ"><div><h2 class="Uo8X3b OhScic zsYMMe"></h2></div><div class="kp-hc"><div class="Hhmu2e wDYxhc NFQFxe viOShc LKPcQc" data-md="16" style="clear:none" data-hveid="CAoQAA" data-ved="2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQhygwAHoECAoQAA"><div class="Ftghae iirjIb"><div class="SPZz6b"><h2 class="qrShPb kno-ecr-pt PZPZlf mfMhoc" data-local-attribute="d3bn" data-attrid="title" data-ved="2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQ3B0oADAAegQIChAB"><span>Black Dog</span></h2><div class="wwUB2c PZPZlf" data-attrid="subtitle"><span data-ved="2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQ2kooATAAegQIChAC"><a href="/search?rlz=1C1CHZN_enIL947IL947&amp;sxsrf=ALeKk02aeNURrfPwuR_bqRrEqiyksmrNxQ:1626442188366&amp;q=Led+Zeppelin&amp;stick=H4sIAAAAAAAAAONgVuLQz9U3MMk2MF3EyuOTmqIQlVpQkJqTmQcARJWgyxsAAAA&amp;sa=X&amp;ved=2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQMTAAegQIChAD" data-ved="2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQMTAAegQIChAD">Led Zeppelin</a></span></div></div></div></div><i class="GdltXd" jscontroller="yMbBpb" style="display:none" jsaction="rcuQ6b:npT2md"></i></div></div><div class="SALvLe farUxc mJ2Mod"><div class="i4J0ge"><div class="siXlze yp1CPe wDYxhc NFQFxe" data-attrid="kc:/music/recording_cluster:lyrics" data-md="113" style="clear:none"><div data-hveid="CAsQAA" data-ved="2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQsEwwAXoECAsQAA"><div class="uHNKed"><div class="Oh5wg"><div class="PZPZlf" data-lyricid="Musixmatch91937"><div jsname="Vinbg" class="bbVIQb"><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Hey hey mama said the way you move</span><br><span jsname="YS01Ge">Gonna make you sweat, gonna make you groove</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Ah, ah, child, way you shake that thing</span><br><span jsname="YS01Ge">Gonna make you burn, gonna make you sting.</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Hey hey baby when you walk that way</span><br><span jsname="YS01Ge">Watch your honey drip, can't keep away</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Oh yeah, oh yeah, oh, ah, ah</span><br><span jsname="YS01Ge">Oh yeah, oh yeah, oh, ah, ah.</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">I gotta roll, can't stand still</span><br><span jsname="YS01Ge">Got a flamin' heart, can't get my fill</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Eyes that shine, burnin' red</span><br><span jsname="YS01Ge">Dreams of you all through my head</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Ah ah, ah ah, ah ah, ah ah, ah ah, ah ah, ahhh</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Hey, baby, whoa baby, pretty baby</span><br><span jsname="YS01Ge">Darlin' makes 'em do me now</span><br><span jsname="YS01Ge">Hey, baby, oh baby, pretty baby</span><br><span jsname="YS01Ge">Move me like you're doin' now</span></div><div jsname="U8S5sf" class="ujudUb"><span jsname="YS01Ge">Didn't take too long 'fore I found out</span><br><span jsname="YS01Ge">What people mean by down and out</span></div><div jsname="U8S5sf" class="ujudUb WRZytc OULBYb"><span jsname="YS01Ge">Spent my money, took my car</span><br><span jsname="YS01Ge">Started tellin' her friends she gonna be a</span><span>… </span></div></div><div jsname="WbKHeb" class="bbVIQb"><div jsname="U8S5sf" class="ujudUb u7wWjf" data-mh="-1"><span jsname="YS01Ge">Spent my money, took my car</span><br><span jsname="YS01Ge">Started tellin' her friends she gonna be a star</span></div><div jsname="U8S5sf" class="ujudUb WRZytc xpdxpnd" data-mh="220" data-mhc="1" style="max-height: 220px;"><span jsname="YS01Ge">I don't know, but I been told</span><br><span jsname="YS01Ge">A big-legged woman ain't got no soul</span><br><span jsname="YS01Ge">Oh yeah, oh yeah, ah, ah, ah</span><br><span jsname="YS01Ge">Oh yeah, oh yeah, ah, ah, ah</span><br><span jsname="YS01Ge">All I ask for when I pray</span><br><span jsname="YS01Ge">A steady rollin' woman won't come my way</span><br><span jsname="YS01Ge">Need a woman gonna hold my hand</span><br><span jsname="YS01Ge">Tell me no lies, make me a happy man</span><br><span jsname="YS01Ge">Ah ah, ah ah, ah ah, ah ah, ah ah, ah ah, ahhh.</span><br><span jsname="YS01Ge">Ah, yeah!</span></div></div></div><div class="j04ED">Source:&nbsp;<a href="https://www.musixmatch.com/" data-ved="2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQ5s4FKAAwAXoECAsQAQ" ping="/url?sa=t&amp;source=web&amp;rct=j&amp;url=https://www.musixmatch.com/&amp;ved=2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQ5s4FKAAwAXoECAsQAQ">Musixmatch</a></div><div class="xpdxpnd PZPZlf" data-lyricid="Musixmatch91937" data-mh="58" data-ved="2ahUKEwjF44mn2efxAhVk5OAKHaxVCCAQycMBKAEwAXoECAsQAg" data-mhc="1" style="max-height: 58px;"><div class="auw0zb">Songwriters: Plant R A / Page James Patrick / Baldwin John</div><div class="auw0zb">Black Dog lyrics © Mushroom Music Pty. Ltd., Flames Of Albion Music, Inc.</div></div></div></div></div></div></div></div></div>
+    `
+    return lyrics;
+    
+}
+
+
+  
+
+ 

@@ -1,0 +1,174 @@
+h1 {
+  text-align: center;
+  color: orange;
+  text-decoration: underline;
+  font-weight: bolder;
+}
+
+body {
+  color: blue;
+}
+
+table {
+  margin: auto;
+}
+
+table, td, th {
+  border: 1px solid black;
+}
+
+td, th {
+  width: 300px;
+  text-align: center;
+}
+
+.menuContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+}
+
+.btn-default {
+  color: green;
+  border: 2px solid #4CAF50;
+}
+
+.home-button:hover {
+  color: black;
+  border: 2px solid red;
+}
+
+.active:hover {
+  color: black;
+  background-color: blue;
+  border: 0px solid #4CAF50;
+}
+
+.active {
+  color: black;
+  background-color: white;
+  border: 0px solid #4CAF50;
+}
+
+li:hover {
+  color: #000000;
+  background-color: white;
+  border: 0px solid #4CAF50;
+}
+
+.nav {
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+
+.btn {
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-ordinal-group: 2;
+      -ms-flex-order: 1;
+          order: 1;
+}
+
+.form-control {
+  text-align: center;
+}
+
+.form-group {
+  text-align: center;
+}
+
+.btn {
+  background-color: white;
+}
+
+.btn-primary {
+  background-color: blue;
+}
+
+.btn-primary:hover {
+  background-color: white;
+  color: blue;
+}
+
+.row {
+  margin-bottom: 10px;
+}
+
+.row > div {
+  height: 50px;
+  font-size: small;
+  text-align: center;
+}
+
+.form-inline {
+  text-align: center;
+}
+
+.form-control {
+  text-align: right;
+}
+
+.btn-outline-success {
+  text-align: right;
+}
+
+.card {
+  border: 1px solid black;
+}
+
+#myProgress {
+  width: 100%;
+  background-color: #ddd;
+}
+
+#myBar {
+  width: 1%;
+  height: 30px;
+  background-color: #04AA6D;
+}
+
+#Progress_Status {
+  width: 50%;
+  background-color: #ddd;
+}
+
+#myprogressBar {
+  width: 2%;
+  height: 20px;
+  background-color: #4CAF50;
+  position: fixed;
+  top: 0;
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.containerCoins {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 1 33.33%;
+          flex: 0 1 33.33%;
+}
+/*# sourceMappingURL=styles.css.map */
